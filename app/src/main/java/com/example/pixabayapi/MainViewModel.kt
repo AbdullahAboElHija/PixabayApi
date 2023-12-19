@@ -1,6 +1,5 @@
 package com.example.pixabayapi
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,8 +14,11 @@ import kotlinx.coroutines.withContext
 class MainViewModel :ViewModel(){
     private val _imagesList = MutableLiveData<List<Image>>()
     val imagesList: LiveData<List<Image>> get() = _imagesList
-    var isLoading = MutableLiveData(false)
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
     fun getImages(apiKey: String, perPage: Int, searchText : String) {
+        _isLoading.postValue(true)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.retrofit.create(Api::class.java).getImages(
@@ -30,8 +32,7 @@ class MainViewModel :ViewModel(){
                     // Update LiveData with the response
 
                     _imagesList.value = response.hits
-                    val imagelist = response.hits
-                    imagelist.map { it -> Log.w("ImagePrintList","$it") }
+                    _isLoading.value = false
                 }
 
             } catch (e: Exception) {

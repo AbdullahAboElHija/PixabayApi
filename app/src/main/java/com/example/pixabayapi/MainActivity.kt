@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import com.example.pixabayapi.Model.Image
 import com.example.pixabayapi.databinding.ActivityMainBinding
 import com.google.android.flexbox.FlexDirection
@@ -47,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.getImages(
             apiKey = "12175339-7048b7105116d7fa1da74220c",
-            perPage = 20,
+            perPage = 10,
             searchText = "",
 
         )
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                 Log.w("CurrentPageModelView","$page")
                 viewModel.getImages(
                     apiKey = "12175339-7048b7105116d7fa1da74220c",
-                    perPage = 20,
+                    perPage = 10,
                     searchText = newText.orEmpty(),
 
                 )
@@ -81,36 +80,36 @@ class MainActivity : AppCompatActivity() {
         binding.rvImages.layoutManager = flexBoxLayoutManager
         binding.rvImages.adapter = adapter
 
-        val scrollListener = object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                val visibleItemCount = flexBoxLayoutManager.childCount
-                val totalItemCount = flexBoxLayoutManager.itemCount
-                val firstVisibleItemPosition = flexBoxLayoutManager.findFirstVisibleItemPosition()
-
-                // Check if we've reached the end of the list
-                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                    && firstVisibleItemPosition >= 0
-                ) {
-                    if (!isLoad){
-                        pageIdx  = pageIdx +5
-                        Log.w("CurrentPageModelView","$page")
-                        viewModel.getImages(
-                            apiKey = "12175339-7048b7105116d7fa1da74220c",
-                            perPage = pageIdx,
-                            searchText = binding.searchViewImages.toString(),
-
-                        )
-                    }
-
-
-
-                }
-            }
-        }
-
-        binding.rvImages.addOnScrollListener(scrollListener)
+//        val scrollListener = object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+//                super.onScrolled(recyclerView, dx, dy)
+//
+//                val visibleItemCount = flexBoxLayoutManager.childCount
+//                val totalItemCount = flexBoxLayoutManager.itemCount
+//                val firstVisibleItemPosition = flexBoxLayoutManager.findFirstVisibleItemPosition()
+//
+//                // Check if we've reached the end of the list
+//                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+//                    && firstVisibleItemPosition >= 0
+//                ) {
+//                    if (!isLoad){
+//                        pageIdx  = pageIdx +5
+//                        Log.w("CurrentPageModelView","$page")
+//                        viewModel.getImages(
+//                            apiKey = "12175339-7048b7105116d7fa1da74220c",
+//                            perPage = pageIdx,
+//                            searchText = binding.searchViewImages.toString(),
+//
+//                        )
+//                    }
+//
+//
+//
+//                }
+//            }
+//        }
+//
+//        binding.rvImages.addOnScrollListener(scrollListener)
 
 
     }

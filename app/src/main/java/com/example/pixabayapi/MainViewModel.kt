@@ -17,22 +17,30 @@ class MainViewModel :ViewModel(){
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
-    fun getImages(apiKey: String, perPage: Int, searchText : String) {
+
+//    var currentPage = 1
+    fun getImages(apiKey: String, perPage: Int, searchText : String ) {
         _isLoading.postValue(true)
+//        currentPage = page
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.retrofit.create(Api::class.java).getImages(
                     apiKey = apiKey,
                     perPage = perPage,
                     searchText = searchText
+//                    page = currentPage
                 )
 
                 // Process the response
                 withContext(Dispatchers.Main) {
                     // Update LiveData with the response
+                        val currentList = _imagesList.value?.toMutableList() ?: mutableListOf()
+                        currentList.addAll(response.hits)
+                        _imagesList.value = currentList
 
-                    _imagesList.value = response.hits
                     _isLoading.value = false
+
+
                 }
 
             } catch (e: Exception) {

@@ -5,10 +5,11 @@
     android:layout_width="119dp"
     android:layout_height="130dp">
 
+
     <ImageView
         android:id="@+id/imageViewImplementation"
-        android:layout_width="101dp"
-        android:layout_height="95dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="11dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -19,4 +20,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/imageLoveEmpty"
+        android:layout_width="23dp"
+        android:layout_height="19dp"
+        app:layout_constraintEnd_toEndOf="@+id/imageViewImplementation"
+        app:layout_constraintTop_toTopOf="@+id/imageViewImplementation"
+        app:srcCompat="@drawable/love" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

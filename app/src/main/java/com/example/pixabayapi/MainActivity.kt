@@ -1,10 +1,12 @@
 package com.example.pixabayapi
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pixabayapi.Model.Image
 import com.example.pixabayapi.databinding.ActivityMainBinding
 import com.google.android.flexbox.FlexDirection
@@ -17,7 +19,9 @@ class MainActivity : AppCompatActivity() {
     var Imageslist :List<Image> = mutableListOf()
     private lateinit var viewModel: MainViewModel
     private val adapter = ShowAdapter(emptyList())
-    var perPageImages = 20
+    var pageIdx = 20
+    var page  = 1
+    var isLoad : Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +36,11 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {
+                isLoad = true
                 binding.progressBarMain.visibility = View.VISIBLE
                 // Hide other UI elements if needed
             } else {
+                isLoad = false
                 binding.progressBarMain.visibility = View.GONE
                 // Show other UI elements if needed
             }
@@ -42,7 +48,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.getImages(
             apiKey = "12175339-7048b7105116d7fa1da74220c",
             perPage = 20,
-            searchText = ""
+            searchText = "",
+
         )
         binding.searchViewImages.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -52,10 +59,13 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 // Update the search query as the user types
+                page  = 1
+                Log.w("CurrentPageModelView","$page")
                 viewModel.getImages(
                     apiKey = "12175339-7048b7105116d7fa1da74220c",
-                    perPage = 25,
-                    searchText = newText.orEmpty()
+                    perPage = 20,
+                    searchText = newText.orEmpty(),
+
                 )
                 return true
             }
@@ -71,33 +81,42 @@ class MainActivity : AppCompatActivity() {
         binding.rvImages.layoutManager = flexBoxLayoutManager
         binding.rvImages.adapter = adapter
 
-//        val scrollListener = object : RecyclerView.OnScrollListener() {
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                super.onScrolled(recyclerView, dx, dy)
-//
-//                val visibleItemCount = flexBoxLayoutManager.childCount
-//                val totalItemCount = flexBoxLayoutManager.itemCount
-//                val firstVisibleItemPosition = flexBoxLayoutManager.findFirstVisibleItemPosition()
-//
-//                // Check if we've reached the end of the list
-//                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-//                    && firstVisibleItemPosition >= 0
-//                ) {
-//                    perPageImages=perPageImages+3
-//                    viewModel.getImages(
-//                        apiKey = "12175339-7048b7105116d7fa1da74220c",
-//                        perPage = perPageImages,
-//                        searchText = binding.searchViewImages.toString()
-//                    )
-//                }
-//            }
-//        }
+        val scrollListener = object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
 
-//        binding.rvImages.addOnScrollListener(scrollListener)
+                val visibleItemCount = flexBoxLayoutManager.childCount
+                val totalItemCount = flexBoxLayoutManager.itemCount
+                val firstVisibleItemPosition = flexBoxLayoutManager.findFirstVisibleItemPosition()
+
+                // Check if we've reached the end of the list
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                    && firstVisibleItemPosition >= 0
+                ) {
+                    if (!isLoad){
+                        pageIdx  = pageIdx +5
+                        Log.w("CurrentPageModelView","$page")
+                        viewModel.getImages(
+                            apiKey = "12175339-7048b7105116d7fa1da74220c",
+                            perPage = pageIdx,
+                            searchText = binding.searchViewImages.toString(),
+
+                        )
+                    }
+
+
+
+                }
+            }
+        }
+
+        binding.rvImages.addOnScrollListener(scrollListener)
 
 
     }
 }
+
+
 
 
 

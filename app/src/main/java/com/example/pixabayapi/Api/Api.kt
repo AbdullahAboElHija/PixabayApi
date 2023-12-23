@@ -9,7 +9,7 @@ interface Api {
     suspend fun getImages(
         @Query("key") apiKey: String,
         @Query("per_page") perPage: Int,
-//        @Query("page") page: Int,
+        @Query("page") page: Int,
         @Query("q") searchText: String
     ): PixabayResponse
 }
